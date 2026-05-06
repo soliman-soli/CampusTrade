@@ -148,13 +148,11 @@ function handleRegister(): void
 
     $stmt = $pdo->prepare(
         'INSERT INTO Students (FullName, Email, PasswordHash, PhoneNumber, SocialMediaLink)
-         VALUES (?, ?, ?, ?, ?);
-         SELECT SCOPE_IDENTITY() AS NewStudentID;'
+         VALUES (?, ?, ?, ?, ?)'
     );
     $stmt->execute([$fullName, $email, $passwordHash, $phone, $socialMedia ?: null]);
 
-    $stmt->nextRowset();
-    $studentId = $stmt->fetchColumn();
+    $studentId = $pdo->lastInsertId();
 
     $_SESSION['student_id']   = (int) $studentId;
     $_SESSION['student_name'] = $fullName;

@@ -1,100 +1,77 @@
-IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'CampusTrade')
-BEGIN
-    CREATE DATABASE CampusTrade;
-END
-GO
+DROP TABLE IF EXISTS Offers;
+DROP TABLE IF EXISTS ListingImages;
+DROP TABLE IF EXISTS Listings;
+DROP TABLE IF EXISTS Categories;
+DROP TABLE IF EXISTS Students;
 
-USE CampusTrade;
-GO
-
-IF OBJECT_ID('dbo.Offers', 'U') IS NOT NULL DROP TABLE dbo.Offers;
-IF OBJECT_ID('dbo.ListingImages', 'U') IS NOT NULL DROP TABLE dbo.ListingImages;
-IF OBJECT_ID('dbo.Listings', 'U') IS NOT NULL DROP TABLE dbo.Listings;
-IF OBJECT_ID('dbo.Categories', 'U') IS NOT NULL DROP TABLE dbo.Categories;
-IF OBJECT_ID('dbo.Students', 'U') IS NOT NULL DROP TABLE dbo.Students;
-GO
-
-CREATE TABLE dbo.Students (
-    StudentID    INT IDENTITY(1,1) PRIMARY KEY,
-    FullName     NVARCHAR(100)   NOT NULL,
-    Email        NVARCHAR(255)   NOT NULL UNIQUE,
-    PasswordHash NVARCHAR(255)   NOT NULL,
-    PhoneNumber  NVARCHAR(20)    NOT NULL,
-    ProfileImage NVARCHAR(500)   NULL,
-    SocialMediaLink NVARCHAR(255) NULL,
+CREATE TABLE Students (
+    StudentID    INT AUTO_INCREMENT PRIMARY KEY,
+    FullName     VARCHAR(100)   NOT NULL,
+    Email        VARCHAR(255)   NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255)   NOT NULL,
+    PhoneNumber  VARCHAR(20)    NOT NULL,
+    ProfileImage VARCHAR(500)   NULL,
+    SocialMediaLink VARCHAR(255) NULL,
     ResetToken   VARCHAR(64)     NULL,
     ResetTokenExpiresAt DATETIME NULL,
-    CreatedAt    DATETIME        NOT NULL DEFAULT GETDATE()
+    CreatedAt    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-GO
 
-CREATE TABLE dbo.Categories (
-    CategoryID   INT IDENTITY(1,1) PRIMARY KEY,
-    CategoryName NVARCHAR(50)    NOT NULL UNIQUE
+CREATE TABLE Categories (
+    CategoryID   INT AUTO_INCREMENT PRIMARY KEY,
+    CategoryName VARCHAR(50)    NOT NULL UNIQUE
 );
-GO
 
-CREATE TABLE dbo.Listings (
-    ListingID    INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE Listings (
+    ListingID    INT AUTO_INCREMENT PRIMARY KEY,
     SellerID     INT             NOT NULL,
     CategoryID   INT             NOT NULL,
-    Title        NVARCHAR(100)   NOT NULL,
-    Description  NVARCHAR(1000)  NOT NULL,
-    Price        DECIMAL(10,2)   NOT NULL
-        CONSTRAINT CK_Listings_Price CHECK (Price >= 0),
-    Condition    VARCHAR(20)     NOT NULL
-        CONSTRAINT CK_Listings_Condition CHECK (Condition IN ('New', 'Like New', 'Good', 'Fair')),
-    Status       VARCHAR(20)     NOT NULL DEFAULT 'Active'
-        CONSTRAINT CK_Listings_Status CHECK (Status IN ('Active', 'Sold', 'Archived')),
-    CreatedAt    DATETIME        NOT NULL DEFAULT GETDATE(),
+    Title        VARCHAR(100)   NOT NULL,
+    Description  TEXT           NOT NULL,
+    Price        DECIMAL(10,2)   NOT NULL CHECK (Price >= 0),
+    `Condition`  VARCHAR(20)     NOT NULL CHECK (`Condition` IN ('New', 'Like New', 'Good', 'Fair')),
+    Status       VARCHAR(20)     NOT NULL DEFAULT 'Active' CHECK (Status IN ('Active', 'Sold', 'Archived')),
+    CreatedAt    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT FK_Listings_Seller   FOREIGN KEY (SellerID)   REFERENCES dbo.Students(StudentID),
-    CONSTRAINT FK_Listings_Category FOREIGN KEY (CategoryID) REFERENCES dbo.Categories(CategoryID)
+    CONSTRAINT FK_Listings_Seller   FOREIGN KEY (SellerID)   REFERENCES Students(StudentID),
+    CONSTRAINT FK_Listings_Category FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
-GO
 
-CREATE TABLE dbo.ListingImages (
-    ImageID      INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE ListingImages (
+    ImageID      INT AUTO_INCREMENT PRIMARY KEY,
     ListingID    INT             NOT NULL,
-    ImagePath    NVARCHAR(500)   NOT NULL,
-    IsPrimary    BIT             NOT NULL DEFAULT 0,
-    UploadedAt   DATETIME        NOT NULL DEFAULT GETDATE(),
+    ImagePath    VARCHAR(500)   NOT NULL,
+    IsPrimary    BOOLEAN         NOT NULL DEFAULT 0,
+    UploadedAt   DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT FK_ListingImages_Listing FOREIGN KEY (ListingID)
-        REFERENCES dbo.Listings(ListingID) ON DELETE CASCADE
+        REFERENCES Listings(ListingID) ON DELETE CASCADE
 );
-GO
 
-CREATE TABLE dbo.Offers (
-    OfferID      INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE Offers (
+    OfferID      INT AUTO_INCREMENT PRIMARY KEY,
     ListingID    INT             NOT NULL,
     BuyerID      INT             NOT NULL,
-    OfferAmount  DECIMAL(10,2)   NOT NULL
-        CONSTRAINT CK_Offers_Amount CHECK (OfferAmount > 0),
-    Message      NVARCHAR(500)   NULL,
-    Status       VARCHAR(20)     NOT NULL DEFAULT 'Pending'
-        CONSTRAINT CK_Offers_Status CHECK (Status IN ('Pending', 'Accepted', 'Rejected')),
-    CreatedAt    DATETIME        NOT NULL DEFAULT GETDATE(),
+    OfferAmount  DECIMAL(10,2)   NOT NULL CHECK (OfferAmount > 0),
+    Message      TEXT            NULL,
+    Status       VARCHAR(20)     NOT NULL DEFAULT 'Pending' CHECK (Status IN ('Pending', 'Accepted', 'Rejected')),
+    CreatedAt    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT FK_Offers_Listing FOREIGN KEY (ListingID) REFERENCES dbo.Listings(ListingID),
-    CONSTRAINT FK_Offers_Buyer   FOREIGN KEY (BuyerID)   REFERENCES dbo.Students(StudentID)
+    CONSTRAINT FK_Offers_Listing FOREIGN KEY (ListingID) REFERENCES Listings(ListingID),
+    CONSTRAINT FK_Offers_Buyer   FOREIGN KEY (BuyerID)   REFERENCES Students(StudentID)
 );
-GO
 
-CREATE INDEX IX_Listings_SellerID    ON dbo.Listings(SellerID);
-CREATE INDEX IX_Listings_CategoryID  ON dbo.Listings(CategoryID);
-CREATE INDEX IX_Listings_Status      ON dbo.Listings(Status);
-CREATE INDEX IX_ListingImages_ListingID ON dbo.ListingImages(ListingID);
-CREATE INDEX IX_Offers_ListingID     ON dbo.Offers(ListingID);
-CREATE INDEX IX_Offers_BuyerID       ON dbo.Offers(BuyerID);
-GO
+CREATE INDEX IX_Listings_SellerID    ON Listings(SellerID);
+CREATE INDEX IX_Listings_CategoryID  ON Listings(CategoryID);
+CREATE INDEX IX_Listings_Status      ON Listings(Status);
+CREATE INDEX IX_ListingImages_ListingID ON ListingImages(ListingID);
+CREATE INDEX IX_Offers_ListingID     ON Offers(ListingID);
+CREATE INDEX IX_Offers_BuyerID       ON Offers(BuyerID);
 
-INSERT INTO dbo.Categories (CategoryName) VALUES
+INSERT INTO Categories (CategoryName) VALUES
     ('Textbooks'),
     ('Electronics'),
     ('Lab Supplies'),
     ('Stationery');
-GO
 
-PRINT 'CampusTrade database schema created and configured successfully.';
-GO
+SELECT 'CampusTrade database schema created and configured successfully.' AS message;

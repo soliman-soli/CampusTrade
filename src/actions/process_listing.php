@@ -172,14 +172,12 @@ try {
     $pdo->beginTransaction();
 
     $listingStmt = $pdo->prepare("
-        INSERT INTO Listings (SellerID, CategoryID, Title, Description, Price, Condition)
-        VALUES (?, ?, ?, ?, ?, ?);
-        SELECT SCOPE_IDENTITY() AS NewListingID;
+        INSERT INTO Listings (SellerID, CategoryID, Title, Description, Price, `Condition`)
+        VALUES (?, ?, ?, ?, ?, ?)
     ");
     $listingStmt->execute([$sellerId, $categoryId, $title, $description, $price, $condition]);
 
-    $listingStmt->nextRowset();
-    $listingId = $listingStmt->fetchColumn();
+    $listingId = $pdo->lastInsertId();
 
     if ($imagePath !== null) {
         $imgStmt = $pdo->prepare("
