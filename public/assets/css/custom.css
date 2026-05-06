@@ -1,0 +1,405 @@
+/* ============================================================
+   CampusTrade — Custom Stylesheet
+   Minor overrides and animations not covered by Tailwind CDN.
+   ============================================================ */
+
+/* --- Google Fonts Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* --- Base Styles --- */
+* {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Fade-in Animation --- */
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Slide-up Animation --- */
+.slide-up {
+    animation: slideUp 0.4s ease-out forwards;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Toast Notifications --- */
+.toast-enter {
+    animation: toastEnter 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+
+.toast-exit {
+    animation: toastExit 0.4s cubic-bezier(0.06, 0.71, 0.55, 1) forwards;
+}
+
+@keyframes toastEnter {
+    from {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes toastExit {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+    }
+}
+
+/* --- Tab Switching Animation --- */
+.tab-content {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tab-content.hidden {
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    position: absolute;
+}
+
+.tab-content.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+}
+
+/* --- Tab Indicator --- */
+.tab-indicator {
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Drag-and-Drop Upload Zone --- */
+.upload-zone {
+    border: 2px dashed #D1D5DB;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: #FAFAFA;
+}
+
+.upload-zone:hover {
+    border-color: #4F46E5;
+    background: #EEF2FF;
+}
+
+.upload-zone.dragover {
+    border-color: #4F46E5;
+    background: #EEF2FF;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    transform: scale(1.01);
+}
+
+/* --- Image Preview Thumbnails --- */
+.image-preview {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 2px solid #E5E7EB;
+    transition: border-color 0.2s ease;
+}
+
+.image-preview:hover {
+    border-color: #4F46E5;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    transition: background 0.2s ease;
+    opacity: 0;
+}
+
+.image-preview:hover .remove-btn {
+    opacity: 1;
+}
+
+.image-preview .remove-btn:hover {
+    background: rgba(220, 38, 38, 1);
+}
+
+/* --- Listing Card Hover Effect --- */
+.listing-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Image Gallery Transitions --- */
+.gallery-main-image {
+    transition: opacity 0.3s ease;
+}
+
+.gallery-main-image.switching {
+    opacity: 0;
+}
+
+.gallery-thumbnail {
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.6;
+}
+
+.gallery-thumbnail:hover,
+.gallery-thumbnail.active {
+    border-color: #4F46E5;
+    opacity: 1;
+}
+
+/* --- Confirmation Modal Overlay --- */
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    animation: modalFadeIn 0.2s ease forwards;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    animation: modalSlideIn 0.3s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* --- Progress Bar --- */
+.progress-bar {
+    height: 4px;
+    background: #E5E7EB;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-bar .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #4F46E5, #7C3AED);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F9FAFB;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
+}
+
+/* --- Input Focus Ring --- */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    border-color: #4F46E5 !important;
+}
+
+/* --- Staggered Fade-in for Grid Children --- */
+.stagger-in > * {
+    animation: fadeIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.stagger-in > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-in > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-in > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-in > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger-in > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-in > *:nth-child(6) { animation-delay: 0.30s; }
+.stagger-in > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-in > *:nth-child(8) { animation-delay: 0.40s; }
+.stagger-in > *:nth-child(9) { animation-delay: 0.45s; }
+
+/* --- Gradient Text Utility --- */
+.gradient-text {
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* --- Hero gradient pattern --- */
+.hero-pattern {
+    background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                      radial-gradient(circle at 40% 80%, rgba(255,255,255,0.06) 0%, transparent 50%);
+}
+
+/* --- Inline Edit Form --- */
+.inline-edit-form {
+    animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 600px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+}
+
+/* --- Offer Card Pulse (for new offers) --- */
+@keyframes offerPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0); }
+}
+
+.offer-new {
+    animation: offerPulse 2s ease-in-out 1;
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 640px) {
+    .upload-zone {
+        padding: 1.25rem;
+    }
+
+    .image-preview {
+        width: 80px;
+        height: 80px;
+    }
+
+    .image-preview .remove-btn {
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   Dark Mode Overrides
+   ============================================================ */
+.dark .upload-zone {
+    border-color: #374151; /* gray-700 */
+    background: #1F2937; /* gray-800 */
+}
+
+.dark .upload-zone:hover,
+.dark .upload-zone.dragover {
+    border-color: #4F46E5; /* indigo-600 */
+    background: #312E81; /* indigo-900 */
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+}
+
+.dark .image-preview {
+    border-color: #374151; /* gray-700 */
+}
+
+.dark .image-preview:hover {
+    border-color: #4F46E5;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #111827; /* gray-900 */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #4B5563; /* gray-600 */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #6B7280; /* gray-500 */
+}
+
+/* Ensure empty states and other hardcoded text instances have decent contrast */
+.dark .text-gray-900 { color: #F3F4F6 !important; }
+.dark .text-gray-800 { color: #E5E7EB !important; }
+.dark .text-gray-700 { color: #D1D5DB !important; }
+.dark .text-gray-600 { color: #9CA3AF !important; }
+.dark .text-gray-500 { color: #6B7280 !important; }
+

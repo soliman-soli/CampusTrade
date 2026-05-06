@@ -1,0 +1,55 @@
+# ============================================================
+# CampusTrade — Apache .htaccess Security Configuration
+#
+# This file restricts direct browser access to sensitive
+# directories (src/ and uploads/) and sets security headers.
+# ============================================================
+
+# Enable rewrite engine
+RewriteEngine On
+
+# ============================================================
+# Block direct access to PHP backend source files
+# Prevents users from accessing /src/ files directly via URL.
+# All PHP files in src/ should only be accessed through
+# proper application routing.
+# ============================================================
+RewriteRule ^src/ - [F,L]
+
+# ============================================================
+# Block directory listings
+# Prevents users from browsing directory contents.
+# ============================================================
+Options -Indexes
+
+# ============================================================
+# Security Headers
+# ============================================================
+<IfModule mod_headers.c>
+    # Prevent MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+
+    # Enable XSS protection in older browsers
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Prevent clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Referrer policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ============================================================
+# Protect sensitive files
+# Block access to hidden files (starting with .)
+# ============================================================
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block access to SQL files
+<FilesMatch "\.(sql|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
